@@ -21,16 +21,26 @@ if os.path.isfile(env_file):
 elif os.environ.get('GOOGLE_CLOUD_PROJECT', None):
     # pull .env definitions from Secret Manager
     project_id = os.environ.get('GOOGLE_CLOUD_PROJECT')
-    # print(f"project_id: {project_id}")
+    print(f"project_id: {project_id}")
+
     secret_id = os.environ.get('GCP_SECRET_NAME')
+    print(f"secret_id: {secret_id}")
+
+    secret_name = os.environ.get('GCP_SECRET_NAME', 'pfolio-backend-8-secret-0')
+    print(f"secret_name: {secret_name}")
+
     version_id = 1
     client = secretmanager.SecretManagerServiceClient()
+
     # print(f"client: {client}")
-    secret_name = os.environ.get('GCP_SECRET_NAME', 'pfolio-backend-secret-0')
+    # secret_name = os.environ.get('GCP_SECRET_NAME', 'pfolio-backend-secret-0')
+    # secret_name = os.environ.get('GCP_SECRET_NAME', 'SET_SECRET_REQUIRED')
     # print(f"secret_name: {secret_name}")
+
     name = f'projects/{project_id}/secrets/{secret_name}/versions/latest'
     payload = client.access_secret_version(name=name).payload.data.decode('UTF-8')
     env.read_env(io.StringIO(payload))
+
     # print("leaving GOOGLE_CLOUD_PROJECT")
 
 else:
@@ -196,17 +206,17 @@ credentials_path = f"config/{credentials_file}"
 # print(f"credentials path: {credentials_path}")
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, 'config/h-pfolio-11afb2c11ec8.json')
+    os.path.join(BASE_DIR, 'config/h-pfolio-1-74260b3e7119.json')
 )
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
-GS_BUCKET_NAME = 'pfolio-backend-0-bucket-0'
+GS_BUCKET_NAME = 'pfolio-backend-8-bucket-0'
 
 STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 #STATIC_URL = '/static/'
-STATIC_URL = 'https://storage.cloud.google.com/pfolio-backend-0-bucket-0/'
+STATIC_URL = 'https://storage.cloud.google.com/pfolio-backend-8-bucket-0/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 

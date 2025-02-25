@@ -7,6 +7,12 @@ from pathlib import Path
 from dotenv import load_dotenv
 from urllib.parse import urlparse
 
+
+print("###############")
+print(os.environ)
+print("###############")
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,11 +29,12 @@ elif os.environ.get('GOOGLE_CLOUD_PROJECT', None):
     project_id = os.environ.get('GOOGLE_CLOUD_PROJECT')
     print(f"project_id: {project_id}")
 
-    secret_id = os.environ.get('GCP_SECRET_NAME')
+    # secret_id = os.environ.get('GOOGLE_SECRET_NAME')
+    secret_id = "pfolio-backend-v1-secret-0"
     print(f"secret_id: {secret_id}")
 
-    secret_name = os.environ.get('GCP_SECRET_NAME', 'pfolio-backend-8-secret-0')
-    print(f"secret_name: {secret_name}")
+    secret_name = "pfolio-backend-v1-secret-0"
+    print(f"secret_name::: {secret_name}")
 
     version_id = 1
     client = secretmanager.SecretManagerServiceClient()
@@ -41,12 +48,19 @@ elif os.environ.get('GOOGLE_CLOUD_PROJECT', None):
     payload = client.access_secret_version(name=name).payload.data.decode('UTF-8')
     env.read_env(io.StringIO(payload))
 
+    print('####################')
+
+    # secret_id_TST = os.getenv('GCP_SECRET_NAME').rstrip("/")
+    secret_id_TST = os.getenv('GCP_SECRET_NAME')
+    print(f"secret_id_TSTS: {secret_id_TST}")
+
+    print('####################')
+
+
     # print("leaving GOOGLE_CLOUD_PROJECT")
 
 else:
     raise Exception('No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.')
-
-
 
 # #load_dotenv()  # take environment variables from .env.
 
@@ -57,7 +71,10 @@ CORS_ALLOWED_ORIGINS = [
     FRONTEND_URL
 ]
 
+
+
 SECRET_KEY = env('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG=os.getenv('DEBUG')
@@ -206,17 +223,18 @@ credentials_path = f"config/{credentials_file}"
 # print(f"credentials path: {credentials_path}")
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, 'config/h-pfolio-1-74260b3e7119.json')
+    # os.path.join(BASE_DIR, f"config/{credentials_file}")
+    os.path.join(BASE_DIR, f"config/h-pfolio-2-b027ac62e87a.json")
 )
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
-GS_BUCKET_NAME = 'pfolio-backend-8-bucket-0'
 
 STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 #STATIC_URL = '/static/'
-STATIC_URL = 'https://storage.cloud.google.com/pfolio-backend-8-bucket-0/'
+GS_BUCKET_NAME = 'pfolio-backend-v1-bucket-0'
+STATIC_URL = f"https://storage.cloud.google.com/{GS_BUCKET_NAME}/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
